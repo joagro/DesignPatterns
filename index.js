@@ -1,6 +1,7 @@
 const DbAdapter = require('./Db/DbAdapter')
+const MainMenu = require('./Menus/MainMenu');
 
 const db = new DbAdapter('./database/MyDB.db');
 
-
-console.log("hello world")
+app = new MainMenu(db);
+app.run()
