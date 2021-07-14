@@ -22,13 +22,13 @@ module.exports = class MainMenu extends AbstractMenu {
                       
             const input = await this.handleInput();
 
-                if (input == this.options.length){
-                    await this.teacherMenu.run()
-                }
+            if (input == this.options.length){
+                await this.teacherMenu.run()
+            }
 
-                if (input == this.options.length +1){
-                    break
-                }
+            if (input == this.options.length +1){
+                break
+            }
 
             
         }

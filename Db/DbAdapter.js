@@ -13,6 +13,11 @@ module.exports = class DbHandler {
 
   }
 
+  executeCommand(command) {
+
+    return command.execute(this);
+  }
+
   // A method that simplifies inserting data from an array of objects
   insertMany(tableName, data) {
 
