@@ -21,8 +21,6 @@ module.exports = class TeacherMenu extends AbstractMenu {
 
             let input = await this.handleInput();
 
-            
-
                 if (input === 1){
 
                         for (let i = 0; i < this.weekdays.length; i++) {
