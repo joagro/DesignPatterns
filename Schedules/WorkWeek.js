@@ -1,46 +1,31 @@
 const prompt = require('async-prompt');
 
-const UpdateWorkdayCommand = require('../DbCommands/UpdateWorkdayCommand');
-const dbHandler = require('../Db/DbAdapter')
+module.exports = class WorkWeek {
 
-
-module.exports = class Workday {
-
-    constructor(personId, teacherName, dayName, start_time, end_time) {
-        this.personId = personId;
-        this.teacherName = teacherName;
-        this.dayName = dayName;
-        this.start_time = start_time;
-        this.end_time = end_time;
-        this.format = /^[0-9][0-9]:[0-9][0-9]$/;
+    constructor(teacher, printStrings, workdays){
+        this.teacher = teacher;
+        this.printStrings = printStrings;
+        this.workdays = workdays;
         this.newStartTime;
         this.newEndTime;
-    }
-
-    async updateSchedule(newStartTime, newEndTime){
-        let command = new UpdateWorkdayCommand(
-            this.dayName, 
-            this.personId, 
-            newStartTime, 
-            newEndTime, 
-            this.start_time, 
-            this.end_time)
-        let results = await dbHandler.executeCommand(command);
+        this.format = /^[0-9][0-9]:[0-9][0-9]$/;
 
     }
 
-    printDay(){
-        console.log(this.personId)
-        console.log(this.teacherName)
-        console.log(this.dayName)
-        console.log(this.start_time)
-        console.log(this.end_time)
+    async updateAll(newStartTime, newEndTime) {
+        for(let day of this.workdays){
+            day.updateSchedule(newStartTime, newEndTime)
+
+        }
     }
 
     async run(){
-        //console.log(this.day.charAt(0).toUpperCase() + this.day.slice(1)) //TODO exchange this for this.printHeadline()???
-        console.log(`Changing workday for ${this.teacherName} on ${this.dayName.charAt(0).toUpperCase() + this.dayName.slice(1)}`)
-        console.log(`${this.teacherName} ${this.start_time} ${this.end_time}`)
+        console.log(`Changing workdays for ${this.teacher}`)
+        console.log(this.printStrings)
+
+        for (let str of this.printStrings){
+            console.log(str)
+        }
 
         let newStartTime;
         let newEndTime;
@@ -94,7 +79,7 @@ module.exports = class Workday {
                     if (confirmation === "y" || confirmation === "Y"){
                         console.log("Update confirmed")
 
-                        await this.updateSchedule(this.newStartTime, this.newEndTime);
+                        await this.updateAll(this.newStartTime, this.newEndTime);
                         break
                     } else {
                         console.log(`invalid input: ${confirmation}`)

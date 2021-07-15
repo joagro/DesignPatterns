@@ -34,31 +34,29 @@ module.exports = class TeacherMenu extends AbstractMenu {
 
                 if( 0 < weekday < this.weekdays.length + 1) {
 
-                    //console.log("weekday is inside if statement: " + weekday)
-
                     const schedule = await this.scheduleFactory.createWeekDay(this.weekdays[weekday -1])
                     const result = await schedule.run();
 
                     if(result) {
                         console.log(`update ${result} on ${this.weekdays[weekday -1]}`)
                         
-                        //const dude = await this.scheduleFactory.createWorkday(result, this.weekdays[weekday -1]);
-
                         const workday = await this.scheduleFactory.createWorkday(this.weekdays[weekday -1], result)//createWorkday(result, this.weekdays[weekday -1]);
                         await workday.run();
-                        
-                        //console.log("dude")
-                        //console.log(dude);
-                        //console.log("dude")
-                        //const workday = await 
                     }
                 }
             }
 
             if (input === 2){
                 const schedule = await this.scheduleFactory.createFullWeek()
-                const result = await schedule.run();
+                const result = await schedule.run(); //result is a name
+                //console.log("result: " + result)
+                //console.log(result)
                 //console.log("display full weekly schedule")
+                if(result) {
+                    //console.log("result is defined")
+                    const teacherSchedule = await this.scheduleFactory.createWorkWeek(result);
+                    await teacherSchedule.run()
+                }
             }
 
             if (input == this.options.length +1){

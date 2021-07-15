@@ -18,7 +18,8 @@ module.exports = class FullWeek extends AbstractMenu {
 
         console.log(this.headline);
         this.printOptions()
-
+        console.log("This is where you can re-schedule a teacher for the full week, select a teacher to edit his/her weekly schedule")
+    
         while(true) {
             let input = await this.handleInput();
 

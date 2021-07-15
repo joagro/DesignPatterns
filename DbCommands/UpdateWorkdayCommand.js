@@ -19,7 +19,6 @@ module.exports = class UpdateWorkdayCommand {
     `
 
     execute(DbHandler) {
-        console.log(this.day)
 
         try {
             let results = DbHandler.run(this.query, 
@@ -41,7 +40,7 @@ module.exports = class UpdateWorkdayCommand {
             let results = DbHandler.run(this.query, 
                     {
                         day: this.day.toLowerCase(), //.toLowerCase(), 
-                        person: this.person,
+                        person: this.personId,
                         start_time:this.oldStartTime,
                         end_time: this.oldEndTime
                     });
