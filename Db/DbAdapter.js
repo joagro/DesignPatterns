@@ -2,19 +2,17 @@
 // https://github.com/JoshuaWise/better-sqlite3/blob/HEAD/docs/api.md
 const sqlite = require('better-sqlite3');
 
-module.exports = class DbHandler {
+class DbHandler {
 
   constructor(pathToDatabase) {
-    if (DbHandler._instance) {
-      throw new Error("Singleton classes can't be instantiated more than once.")
+    if (DbHandler.instance == null) {
+      this.connection = sqlite(pathToDatabase);
+      DbHandler.instance = this
     }
-    DbHandler._instance = this;
-    this.connection = sqlite(pathToDatabase);
-
+    return DbHandler.instance
   }
 
   executeCommand(command) {
-
     return command.execute(this);
   }
 
@@ -53,3 +51,6 @@ module.exports = class DbHandler {
     return statement.all(params);
   }
 }
+
+const dbHandler = new DbHandler('./database/MyDB.db')
+module.exports = dbHandler;

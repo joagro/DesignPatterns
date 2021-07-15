@@ -3,10 +3,9 @@ const ScheduleFactory = require('../Schedules/ScheduleFactory');
 
 module.exports = class TeacherMenu extends AbstractMenu {
 
-    constructor(db) {
+    constructor() {
         super("Back to the main menu");
-        this.DB = db;
-        this.scheduleFactory = new ScheduleFactory(db);
+        this.scheduleFactory = new ScheduleFactory();
     }
 
     options = ["Show workers at a given day", "show full work week"];
@@ -49,7 +48,7 @@ module.exports = class TeacherMenu extends AbstractMenu {
 
                 if(input === this.weekdays.length + 1) {
                     break
-            }
+                }
             }
 
             if (input === 2){

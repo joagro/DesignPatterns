@@ -1,35 +1,38 @@
 const GetActiveTeachersCommand = require('../DbCommands/GetActiveTeachersCommand');
 const GetAllWorkdaysByTeacherCommand = require('../DbCommands/GetAllWorkdaysByTeacherCommand');
 const GetWeekdayCommand = require('../DbCommands/GetWeekdayCommand');
+const UpdateWorkday = require('../DbCommands/UpdateWorkday');
 
+const dbHandler = require('../Db/DbAdapter')
 const Weekday = require('./Weekday');
 const FullWeek = require('./FullWeek');
 
 module.exports = class ScheduleFactory{
 
-    constructor(db) {
-        this.DB = db
+    constructor() {
     }
 
-    //Constructors
     async createWeekDay(day) {
         
         let command = new GetWeekdayCommand(day)
 
-        let weekday = await this.DB.executeCommand(command);
+        //let update = new UpdateWorkday("monday", 1, "09:00", "15:30", "09:00", "15:30");
+        //    constructor(day, person, newStartTime, newEndTime, oldStartTime, oldEndTime){
 
-        return new Weekday(day, weekday);
+
+        try {
+            let weekday = await dbHandler.executeCommand(command);
+            return new Weekday(day, weekday);
+        } catch(error) {
+            console.log(error)
+        }
     }
 
     async createFullWeek() {
-       //let week = await this.getWholeWorkWeek();
         let command = new GetActiveTeachersCommand();
-        let activeTeachers = await this.DB.executeCommand(command);
-        //let activeTeachers = await this.getActiveTeachers();
-        //console.log(activeTeachers);
-        //let teachers = await Promise.all(activeTeachers.map(async teacher => { return await this.getAllWorkdaysByTeacher(teacher)}));
+        let activeTeachers = await dbHandler.executeCommand(command);
 
-        //find length of longest string
+        //find length of longest teacher name
         let nameMaxLength = Math.max(...(activeTeachers.map(el => el.length)));
 
         let printStrings = [];
@@ -38,24 +41,18 @@ module.exports = class ScheduleFactory{
 
         printStrings.push(headline)
         for (let teach of activeTeachers){
-            //teacherDictionary[teach] = await this.getAllWorkdaysByTeacher(teach);
             let command = new GetAllWorkdaysByTeacherCommand(teach);
-            let teacherWorkdays = await this.DB.executeCommand(command);
-            //let teacherWorkdays = await this.getAllWorkdaysByTeacher(teach);
+            let teacherWorkdays = await dbHandler.executeCommand(command);
 
             let tempString = teach.padEnd(nameMaxLength, " ")
             for (let day of teacherWorkdays) {
                 tempString += ` ${day.start_time}/${day.end_time}`
             }
-            //printStrings.push(` ${day.start_time}/${day.end_time}`)
             printStrings.push(tempString)
         }
-
-        //console.log(printStrings);
 
         let newweek = new FullWeek(printStrings, activeTeachers);
 
         return newweek;
     }
-
 }
