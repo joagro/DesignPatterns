@@ -1,4 +1,5 @@
 const AbstractMenu = require('./AbstractMenu');
+const WeekdaySelector = require('./WeekdaySelector');
 const ScheduleFactory = require('../Schedules/ScheduleFactory');
 
 module.exports = class TeacherMenu extends AbstractMenu {
@@ -6,6 +7,7 @@ module.exports = class TeacherMenu extends AbstractMenu {
     constructor() {
         super("Back to the main menu");
         this.scheduleFactory = new ScheduleFactory();
+        this.weekdaySelector = new WeekdaySelector();
     }
 
     options = ["Show workers at a given day", "show full work week"];
@@ -24,30 +26,32 @@ module.exports = class TeacherMenu extends AbstractMenu {
 
             if (input === 1){
 
-                for (let i = 0; i < this.weekdays.length; i++) {
-                    console.log(`${i +1}: ${this.weekdays[i]}`)
-                }
-                console.log(`${this.weekdays.length +1}: exit`)
+                let weekday = await this.weekdaySelector.run()
 
-                try {
-                    input = await this.handleInput();
-    
-                } catch(err) {
-                    console.log(err)
+                if(weekday > this.weekdays.length) {
+                    break
                 }
 
-                if(1 <= input <= this.weekdays.length) {
+                if( 0 < weekday < this.weekdays.length + 1) {
 
-                    const schedule = await this.scheduleFactory.createWeekDay(this.weekdays[input -1])
+                    //console.log("weekday is inside if statement: " + weekday)
+
+                    const schedule = await this.scheduleFactory.createWeekDay(this.weekdays[weekday -1])
                     const result = await schedule.run();
 
                     if(result) {
-                        console.log(`update ${result} on ${this.weekdays[input -1]}`)
-                    }
-                }
+                        console.log(`update ${result} on ${this.weekdays[weekday -1]}`)
+                        
+                        //const dude = await this.scheduleFactory.createWorkday(result, this.weekdays[weekday -1]);
 
-                if(input === this.weekdays.length + 1) {
-                    break
+                        const workday = await this.scheduleFactory.createWorkday(this.weekdays[weekday -1], result)//createWorkday(result, this.weekdays[weekday -1]);
+                        await workday.run();
+                        
+                        //console.log("dude")
+                        //console.log(dude);
+                        //console.log("dude")
+                        //const workday = await 
+                    }
                 }
             }
 

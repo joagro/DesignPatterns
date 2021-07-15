@@ -1,11 +1,14 @@
 const GetActiveTeachersCommand = require('../DbCommands/GetActiveTeachersCommand');
 const GetAllWorkdaysByTeacherCommand = require('../DbCommands/GetAllWorkdaysByTeacherCommand');
 const GetWeekdayCommand = require('../DbCommands/GetWeekdayCommand');
-const UpdateWorkday = require('../DbCommands/UpdateWorkday');
+const GetWorkdayByTeacherCommand = require('../DbCommands/GetWorkdayByTeacherCommand');
+//const UpdateWorkday = require('../DbCommands/UpdateWorkdayCommand');
+
 
 const dbHandler = require('../Db/DbAdapter')
 const Weekday = require('./Weekday');
 const FullWeek = require('./FullWeek');
+const Workday = require('./Workday');
 
 module.exports = class ScheduleFactory{
 
@@ -16,13 +19,22 @@ module.exports = class ScheduleFactory{
         
         let command = new GetWeekdayCommand(day)
 
-        //let update = new UpdateWorkday("monday", 1, "09:00", "15:30", "09:00", "15:30");
-        //    constructor(day, person, newStartTime, newEndTime, oldStartTime, oldEndTime){
-
-
         try {
             let weekday = await dbHandler.executeCommand(command);
             return new Weekday(day, weekday);
+        } catch(error) {
+            console.log(error)
+        }
+    }
+
+    async createWorkday(day, teacher){
+
+        let mycommand = new GetWorkdayByTeacherCommand(day, teacher);
+
+        try {
+            let results = await dbHandler.executeCommand(mycommand);
+            let workday =  new Workday(results.personid, results.worker, results.day, results.start_time, results.end_time);
+            return workday;
         } catch(error) {
             console.log(error)
         }
