@@ -2,8 +2,6 @@ const GetActiveTeachersCommand = require('../DbCommands/GetActiveTeachersCommand
 const GetAllWorkdaysByTeacherCommand = require('../DbCommands/GetAllWorkdaysByTeacherCommand');
 const GetWeekdayCommand = require('../DbCommands/GetWeekdayCommand');
 const GetWorkdayByTeacherCommand = require('../DbCommands/GetWorkdayByTeacherCommand');
-//const UpdateWorkday = require('../DbCommands/UpdateWorkdayCommand');
-
 
 const dbHandler = require('../Db/DbAdapter')
 const Weekday = require('./Weekday');
@@ -33,7 +31,6 @@ module.exports = class ScheduleFactory{
         console.log("creating workweek")
         let command = new GetAllWorkdaysByTeacherCommand(teacher);
         let teacherWorkdays = await dbHandler.executeCommand(command);
-        //console.log(teacherWorkdays);
 
         let weekdays = [];
 
@@ -47,25 +44,11 @@ module.exports = class ScheduleFactory{
         let tempString = teacher + " ";
         for (let day of teacherWorkdays) {
             tempString += ` ${day.start_time}/${day.end_time}`
-            /*
-            console.log("day.teacher_id is: " + day.teacher_id)
-            console.log("day.day is: " + day.day)
-            console.log("day.start_time: " + day.start_time)
-            console.log("day.end_time: " + day.end_time)
-            */
-            //console.log("day is: " + day)
-            //console.log("day is: " + day)
-                                 //(results.personid, results.worker, results.day, results.start_time, results.end_time)
-                                     //(personId, teacherName, dayName, start_time, end_time)
-                                     //(personId, teacherName, dayName, start_time, end_time)
             weekdays.push(new Workday(day.teacher_id, day.name, day.day, day.start_time, day.end_time))
         }
         printStrings.push(tempString)
-        //console.log(printStrings);
 
         return new WorkWeek(teacher, printStrings, weekdays)
-        //for (let workday of )
-
     }
 
     async createWeekDay(day) {
@@ -102,7 +85,6 @@ module.exports = class ScheduleFactory{
             }
             printStrings.push(tempString)
         }
-        //printStrings.push("This is where you can re-schedule a teacher for the full week, select a teacher to edit his/her weekly schedule")
 
         let newweek = new FullWeek(printStrings, activeTeachers);
 

@@ -49,16 +49,11 @@ module.exports = class TeacherMenu extends AbstractMenu {
             if (input === 2){
                 const schedule = await this.scheduleFactory.createFullWeek()
                 const result = await schedule.run(); //result is a name
-                //console.log("result: " + result)
-                //console.log(result)
-                //console.log("display full weekly schedule")
                 if(result) {
-                    //console.log("result is defined")
                     const teacherSchedule = await this.scheduleFactory.createWorkWeek(result);
                     await teacherSchedule.run()
                 }
             }
-
             if (input == this.options.length +1){
                 break
             }
